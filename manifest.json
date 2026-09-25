@@ -1,11 +1,12 @@
 {
   "name": "Formattr",
   "short_name": "Formattr",
-  "description": "Batch-konvertering og nedskalering av bilder",
+  "description": "Batch-konvertering og navneformatering for bilder",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f1117",
-  "theme_color": "#0f1117",
+  "orientation": "portrait",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
   "icons": [
     {
       "src": "icon.png",
