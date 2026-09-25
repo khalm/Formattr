@@ -22,7 +22,7 @@
       padding: 20px 16px;
       border-radius: 14px;
       border: 1px solid #30363d;
-      max-width: 480px;
+      max-width: 460px;
       margin: 0 auto;
       box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     }
@@ -41,15 +41,15 @@
       margin-bottom: 10px;
     }
 
-    label { font-size: 0.8rem; color: #8b949e; display: block; margin-bottom: 4px; font-weight: 500; }
+    label { font-size: 0.8rem; color: #8b949e; display: block; margin-bottom: 6px; font-weight: 500; }
     input[type="file"], input[type="text"] {
       width: 100%;
-      padding: 10px 12px;
+      padding: 12px;
       background: #0d1117;
       color: #e6edf3;
       border: 1px solid #30363d;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       outline: none;
     }
     input[type="text"]:focus { border-color: #58a6ff; }
@@ -65,98 +65,20 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 8px 4px;
+      padding: 10px 4px;
       background: #0d1117;
       border: 1px solid #30363d;
-      border-radius: 6px;
+      border-radius: 8px;
       color: #e6edf3;
       font-size: 0.85rem;
       cursor: pointer;
       margin: 0;
     }
-    .fmt-grid input[type="checkbox"] { accent-color: #1f6feb; }
-
-    .tokens-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-    .token-btn {
-      background: #21262d;
-      border: 1px solid #30363d;
-      color: #c9d1d9;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .token-btn:active { background: #30363d; color: #58a6ff; }
-
-    /* Resultatboks med inline tekstredigering */
-    .result-box {
-      min-height: 48px;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      padding: 6px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-    }
-    .tag {
-      background: #1f6feb;
-      color: #ffffff;
-      padding: 4px 6px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      user-select: none;
-    }
-    .tag-custom { background: #238636; }
-    .tag-ctrl {
-      background: rgba(0,0,0,0.25);
-      border: none;
-      color: #ffffff;
-      padding: 2px 5px;
-      border-radius: 3px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      line-height: 1;
-    }
-    .tag-ctrl:active { background: rgba(0,0,0,0.5); }
-    .tag-remove {
-      cursor: pointer;
-      font-weight: bold;
-      margin-left: 2px;
-      padding: 0 4px;
-    }
-
-    .inline-adder {
-      border: none;
-      background: transparent;
-      color: #e6edf3;
-      font-size: 0.85rem;
-      outline: none;
-      flex: 1;
-      min-width: 120px;
-      padding: 4px;
-    }
-
-    .settings-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 10px;
-    }
+    .fmt-grid input[type="checkbox"] { accent-color: #1f6feb; width: 16px; height: 16px; }
 
     .preview-box {
-      margin-top: 12px;
-      padding: 10px;
+      margin-top: 14px;
+      padding: 12px;
       background: #090d13;
       border: 1px dashed #30363d;
       border-radius: 8px;
@@ -173,7 +95,7 @@
       color: #c9d1d9;
       border: 1px dashed #30363d;
       border-radius: 8px;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       cursor: pointer;
       margin-top: 4px;
     }
@@ -203,7 +125,7 @@
 
     #status {
       margin-top: 14px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: #8b949e;
       text-align: center;
       line-height: 1.4;
@@ -214,14 +136,19 @@
 
 <div class="card">
   <h1>Formattr</h1>
-  <div class="sub">Batch-eksport & navneformatering</div>
+  <div class="sub">Rask konvertering og nedskalering</div>
 
   <!-- Bildekilde -->
-  <div class="section-title">Bildekilde</div>
+  <div class="section-title">1. Velg bilde</div>
   <input type="file" id="imageInput" accept="image/*">
 
+  <!-- Filnavn -->
+  <div class="section-title">2. Filnavn</div>
+  <label for="fileNameInput">Ønsket navn (uten størrelse og format):</label>
+  <input type="text" id="fileNameInput" placeholder="bilde">
+
   <!-- Målformater -->
-  <div class="section-title">Målformater</div>
+  <div class="section-title">3. Formater</div>
   <div class="fmt-grid">
     <label><input type="checkbox" value="image/jpeg" class="fmt" checked> JPG</label>
     <label><input type="checkbox" value="image/png" class="fmt"> PNG</label>
@@ -231,43 +158,16 @@
   </div>
 
   <!-- Piksler -->
-  <div class="section-title">Bredder (px, kommaseparert)</div>
+  <div class="section-title">4. Bredder (px, kommaseparert)</div>
   <input type="text" id="widthsInput" value="1920, 1080, 800" placeholder="f.eks. 1920, 1080">
 
-  <!-- Navneskjema -->
-  <div class="section-title">Navneformatering (Scheme)[span_2](start_span)[span_2](end_span)</div>
-  <label>Attributter (klikk for å legge til):</label>
-  <div class="tokens-bar">
-    <button type="button" class="token-btn" onclick="addToken('name', 'Navn')">+ Navn</button>
-    <button type="button" class="token-btn" onclick="addToken('size', 'Størrelse')">+ Størrelse</button>
-    <button type="button" class="token-btn" onclick="addToken('format', 'Format')">+ Format</button>
-    <button type="button" class="token-btn" onclick="addToken('date', 'Dato')">+ Dato</button>
-    <button type="button" class="token-btn" style="color: #f85149;" onclick="clearTokens()">Tøm[span_3](start_span)[span_3](end_span)</button>
-  </div>
-
-  <label style="margin-top: 10px;">Resultat-struktur (flytt med ‹ › eller skriv inn):</label>
-  <div class="result-box" id="resultTokens">
-    <!-- Genereres av JavaScript -->
-  </div>
-
-  <div class="settings-grid">
-    <div>
-      <label>Separator[span_4](start_span)[span_4](end_span)</label>
-      <input type="text" id="separatorInput" value="-" maxlength="4">
-    </div>
-    <div>
-      <label>Egendefinert base-navn</label>
-      <input type="text" id="baseNameInput" placeholder="Valgfritt navn">
-    </div>
-  </div>
-
   <div class="preview-box">
-    Forhåndsvisning[span_5](start_span)[span_5](end_span):<br>
+    Eksempel på filnavn:<br>
     <span id="previewText">...</span>
   </div>
 
   <!-- Mappe og lagring -->
-  <div class="section-title">Lagring</div>
+  <div class="section-title">5. Lagring</div>
   <button type="button" id="selectDirBtn" class="folder-btn">Velg målmappe (Standard: Nedlastinger)</button>
 
   <button id="convertBtn" class="main-btn" disabled>Start konvertering</button>
@@ -277,152 +177,15 @@
 
 <script>
   let currentImage = null;
-  let originalFileName = 'bilde';
   let targetDirectoryHandle = null;
 
-  let schemeTokens = [
-    { type: 'name', label: 'Navn' },
-    { type: 'size', label: 'Størrelse' }
-  ];
-
   const imageInput = document.getElementById('imageInput');
-  const convertBtn = document.getElementById('convertBtn');
+  const fileNameInput = document.getElementById('fileNameInput');
   const widthsInput = document.getElementById('widthsInput');
-  const separatorInput = document.getElementById('separatorInput');
-  const baseNameInput = document.getElementById('baseNameInput');
-  const resultTokensDiv = document.getElementById('resultTokens');
+  const convertBtn = document.getElementById('convertBtn');
+  const selectDirBtn = document.getElementById('selectDirBtn');
   const previewText = document.getElementById('previewText');
   const statusDiv = document.getElementById('status');
-  const selectDirBtn = document.getElementById('selectDirBtn');
-
-  function renderTokens() {
-    resultTokensDiv.innerHTML = '';
-
-    schemeTokens.forEach((t, index) => {
-      const tag = document.createElement('div');
-      tag.className = 'tag ' + (t.type === 'custom' ? 'tag-custom' : '');
-      
-      const leftBtn = `<button type="button" class="tag-ctrl" onclick="moveToken(${index}, -1)">‹</button>`;
-      const rightBtn = `<button type="button" class="tag-ctrl" onclick="moveToken(${index}, 1)">›</button>`;
-      
-      tag.innerHTML = `
-        ${leftBtn}
-        <span>${t.label}</span>
-        ${rightBtn}
-        <span class="tag-remove" onclick="removeToken(${index})">&times;</span>
-      `;
-      resultTokensDiv.appendChild(tag);
-    });
-
-    // Legg til inline input-felt i slutten av boksen
-    const inputEl = document.createElement('input');
-    inputEl.type = 'text';
-    inputEl.className = 'inline-adder';
-    inputEl.placeholder = '+ skriv inn tekst...';
-    inputEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ',') {
-        e.preventDefault();
-        const val = inputEl.value.trim();
-        if (val) {
-          schemeTokens.push({ type: 'custom', label: val, val: val });
-          renderTokens();
-        }
-      }
-    });
-    resultTokensDiv.appendChild(inputEl);
-
-    updatePreview();
-  }
-
-  function moveToken(index, direction) {
-    const newIndex = index + direction;
-    if (newIndex < 0 || newIndex >= schemeTokens.length) return;
-    const temp = schemeTokens[index];
-    schemeTokens[index] = schemeTokens[newIndex];
-    schemeTokens[newIndex] = temp;
-    renderTokens();
-  }
-
-  function addToken(type, label) {
-    schemeTokens.push({ type, label });
-    renderTokens();
-  }
-
-  function removeToken(index) {
-    schemeTokens.splice(index, 1);
-    renderTokens();
-  }
-
-  function clearTokens() {
-    schemeTokens = [];
-    renderTokens();
-  }
-
-  function generateName(w, ext) {
-    const sep = separatorInput.value;
-    const base = baseNameInput.value.trim() || originalFileName;
-    const today = new Date().toISOString().slice(0, 10);
-
-    const parts = schemeTokens.map(t => {
-      if (t.type === 'name') return base;
-      if (t.type === 'size') return `${w}px`;
-      if (t.type === 'format') return ext;
-      if (t.type === 'date') return today;
-      if (t.type === 'custom') return t.val;
-      return '';
-    }).filter(p => p.length > 0);
-
-    const fullName = parts.join(sep);
-    return `${fullName || 'export'}.${ext}`;
-  }
-
-  function updatePreview() {
-    const sampleWidth = 1920;
-    const firstCheckbox = document.querySelector('.fmt:checked');
-    const sampleExt = firstCheckbox ? getExtension(firstCheckbox.value) : 'webp';
-    previewText.innerText = generateName(sampleWidth, sampleExt);
-  }
-
-  separatorInput.addEventListener('input', updatePreview);
-  baseNameInput.addEventListener('input', updatePreview);
-  document.querySelectorAll('.fmt').forEach(cb => cb.addEventListener('change', updatePreview));
-
-  imageInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-    if (!baseNameInput.value) {
-      baseNameInput.placeholder = originalFileName;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        currentImage = img;
-        convertBtn.disabled = false;
-        statusDiv.innerHTML = `Valgt bilde: ${img.naturalWidth} &times; ${img.naturalHeight} px`;
-        updatePreview();
-      };
-      img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-
-  selectDirBtn.addEventListener('click', async () => {
-    if ('showDirectoryPicker' in window) {
-      try {
-        targetDirectoryHandle = await window.showDirectoryPicker();
-        selectDirBtn.innerText = `Mappe: ${targetDirectoryHandle.name}`;
-        selectDirBtn.classList.add('active');
-      } catch (err) {
-        if (err.name !== 'AbortError') console.error(err);
-      }
-    } else {
-      alert('File System Access API er ikke tilgjengelig i denne nettleseren.');
-    }
-  });
 
   function getExtension(mime) {
     if (mime === 'image/jpeg') return 'jpg';
@@ -433,6 +196,60 @@
     return 'img';
   }
 
+  function getBaseName() {
+    return fileNameInput.value.trim() || 'bilde';
+  }
+
+  function updatePreview() {
+    const base = getBaseName();
+    const firstCheckbox = document.querySelector('.fmt:checked');
+    const ext = firstCheckbox ? getExtension(firstCheckbox.value) : 'webp';
+    const widths = widthsInput.value.split(',').map(w => w.trim()).filter(Boolean);
+    const sampleWidth = widths.length > 0 ? widths[0] : '1080';
+
+    previewText.innerText = `${base}-${sampleWidth}px.${ext}`;
+  }
+
+  fileNameInput.addEventListener('input', updatePreview);
+  widthsInput.addEventListener('input', updatePreview);
+  document.querySelectorAll('.fmt').forEach(cb => cb.addEventListener('change', updatePreview));
+
+  imageInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+    fileNameInput.value = originalName;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        currentImage = img;
+        convertBtn.disabled = false;
+        statusDiv.innerHTML = `Originalstørrelse: ${img.naturalWidth} &times; ${img.naturalHeight} px`;
+        updatePreview();
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Mappeadgang for Android/Chrome
+  selectDirBtn.addEventListener('click', async () => {
+    if ('showDirectoryPicker' in window) {
+      try {
+        targetDirectoryHandle = await window.showDirectoryPicker();
+        selectDirBtn.innerText = `Mappe: ${targetDirectoryHandle.name}`;
+        selectDirBtn.classList.add('active');
+      } catch (err) {
+        if (err.name !== 'AbortError') console.error(err);
+      }
+    } else {
+      alert('Nettleseren din støtter ikke direkte mappevalg. Filene legges i din standard Nedlastinger-mappe.');
+    }
+  });
+
   convertBtn.addEventListener('click', async () => {
     const selectedFormats = Array.from(document.querySelectorAll('.fmt:checked')).map(cb => cb.value);
     const targetWidths = widthsInput.value.split(',')
@@ -440,7 +257,7 @@
       .filter(w => !isNaN(w) && w > 0);
 
     if (selectedFormats.length === 0 || targetWidths.length === 0) {
-      alert('Velg minst ett format og én gyldig pikselbredde.');
+      alert('Velg minst ett format og én gyldig bredde.');
       return;
     }
 
@@ -450,6 +267,7 @@
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const aspect = currentImage.naturalHeight / currentImage.naturalWidth;
+    const baseName = getBaseName();
 
     let processedCount = 0;
 
@@ -464,11 +282,12 @@
 
       for (const format of selectedFormats) {
         const ext = getExtension(format);
-        const fileName = generateName(targetW, ext);
+        const fileName = `${baseName}-${targetW}px.${ext}`;
 
         const blob = await new Promise(resolve => canvas.toBlob(resolve, format, 0.9));
 
         if (targetDirectoryHandle) {
+          // Sjekk om filen eksisterer i valgt mappe
           let fileExists = false;
           try {
             await targetDirectoryHandle.getFileHandle(fileName);
@@ -480,7 +299,7 @@
           if (fileExists) {
             const confirmed = confirm(`Filen "${fileName}" finnes allerede i mappen.\n\nVil du overskrive den?`);
             if (!confirmed) {
-              continue;
+              continue; // Hopper over hvis du svarer Avbryt
             }
           }
 
@@ -491,9 +310,10 @@
             await writable.close();
             processedCount++;
           } catch (err) {
-            console.error('Lagringsfeil:', err);
+            console.error('Kunne ikke skrive fil:', err);
           }
         } else {
+          // Standard nettlesernedlasting
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
@@ -512,7 +332,7 @@
     convertBtn.disabled = false;
   });
 
-  renderTokens();
+  updatePreview();
 </script>
 
 </body>
