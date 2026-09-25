@@ -7,6 +7,8 @@
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0d1117">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 
   <style>
     * { box-sizing: border-box; }
@@ -285,7 +287,7 @@
         const ext = getExtension(format);
         const fileName = `${baseName}-${targetW}.${ext}`;
 
-        // Sikkerhetssperre: Nekt overskriving hvis filnavnet er identisk med kildebildet
+        // Sikkerhetssperre: Nekt overskriving hvis navnet er identisk med kildebildet
         if (fileName.toLowerCase() === originalFullFileName.toLowerCase()) {
           alert(`Sikkerhetsstopp: Eksportnavnet "${fileName}" matcher originalbildet nøyaktig. Filen ble ikke lagret for å unngå overskriving av originalen.`);
           continue;
@@ -338,6 +340,13 @@
   });
 
   updatePreview();
+
+  // Registrering av Service Worker for PWA-installasjon
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => console.error(err));
+    });
+  }
 </script>
 
 </body>
