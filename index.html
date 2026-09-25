@@ -142,13 +142,8 @@
   <div class="section-title">1. Velg bilde</div>
   <input type="file" id="imageInput" accept="image/*">
 
-  <!-- Filnavn -->
-  <div class="section-title">2. Filnavn</div>
-  <label for="fileNameInput">Ønsket navn (uten størrelse og format):</label>
-  <input type="text" id="fileNameInput" placeholder="bilde">
-
   <!-- Målformater -->
-  <div class="section-title">3. Formater</div>
+  <div class="section-title">2. Formater</div>
   <div class="fmt-grid">
     <label><input type="checkbox" value="image/jpeg" class="fmt" checked> JPG</label>
     <label><input type="checkbox" value="image/png" class="fmt"> PNG</label>
@@ -158,8 +153,13 @@
   </div>
 
   <!-- Piksler -->
-  <div class="section-title">4. Bredder (px, kommaseparert)</div>
+  <div class="section-title">3. Bredder (px, kommaseparert)</div>
   <input type="text" id="widthsInput" value="1920, 1080, 800" placeholder="f.eks. 1920, 1080">
+
+  <!-- Filnavn rett over eksempelvisningen -->
+  <div class="section-title">4. Filnavn</div>
+  <label for="fileNameInput">Ønsket navn (uten størrelse og format):</label>
+  <input type="text" id="fileNameInput" placeholder="bilde">
 
   <div class="preview-box">
     Eksempel på filnavn:<br>
@@ -177,6 +177,7 @@
 
 <script>
   let currentImage = null;
+  let originalFullFileName = '';
   let targetDirectoryHandle = null;
 
   const imageInput = document.getElementById('imageInput');
@@ -207,7 +208,7 @@
     const widths = widthsInput.value.split(',').map(w => w.trim()).filter(Boolean);
     const sampleWidth = widths.length > 0 ? widths[0] : '1080';
 
-    previewText.innerText = `${base}-${sampleWidth}px.${ext}`;
+    previewText.innerText = `${base}-${sampleWidth}.${ext}`;
   }
 
   fileNameInput.addEventListener('input', updatePreview);
@@ -218,8 +219,9 @@
     const file = e.target.files[0];
     if (!file) return;
 
-    const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-    fileNameInput.value = originalName;
+    originalFullFileName = file.name;
+    const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+    fileNameInput.value = baseName;
 
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -235,7 +237,6 @@
     reader.readAsDataURL(file);
   });
 
-  // Mappeadgang for Android/Chrome
   selectDirBtn.addEventListener('click', async () => {
     if ('showDirectoryPicker' in window) {
       try {
@@ -246,7 +247,7 @@
         if (err.name !== 'AbortError') console.error(err);
       }
     } else {
-      alert('Nettleseren din støtter ikke direkte mappevalg. Filene legges i din standard Nedlastinger-mappe.');
+      alert('Nettleseren din støtter ikke direkte mappevalg. Filene legges i standard Nedlastinger-mappe.');
     }
   });
 
@@ -282,12 +283,17 @@
 
       for (const format of selectedFormats) {
         const ext = getExtension(format);
-        const fileName = `${baseName}-${targetW}px.${ext}`;
+        const fileName = `${baseName}-${targetW}.${ext}`;
+
+        // Sikkerhetssperre: Nekt overskriving hvis filnavnet er identisk med kildebildet
+        if (fileName.toLowerCase() === originalFullFileName.toLowerCase()) {
+          alert(`Sikkerhetsstopp: Eksportnavnet "${fileName}" matcher originalbildet nøyaktig. Filen ble ikke lagret for å unngå overskriving av originalen.`);
+          continue;
+        }
 
         const blob = await new Promise(resolve => canvas.toBlob(resolve, format, 0.9));
 
         if (targetDirectoryHandle) {
-          // Sjekk om filen eksisterer i valgt mappe
           let fileExists = false;
           try {
             await targetDirectoryHandle.getFileHandle(fileName);
@@ -299,7 +305,7 @@
           if (fileExists) {
             const confirmed = confirm(`Filen "${fileName}" finnes allerede i mappen.\n\nVil du overskrive den?`);
             if (!confirmed) {
-              continue; // Hopper over hvis du svarer Avbryt
+              continue;
             }
           }
 
@@ -313,7 +319,6 @@
             console.error('Kunne ikke skrive fil:', err);
           }
         } else {
-          // Standard nettlesernedlasting
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
