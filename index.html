@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Formattr</title>
+
+  <!-- PWA Manifest & App-innstillinger -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f1117">
+
+  <!-- iOS / Safari fullskjerm-støtte -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Formattr">
+  <link rel="apple-touch-icon" href="icon.png">
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 24px 16px;
+      background: #0f1117;
+      color: #f0f2f5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      background: #1a1d24;
+      padding: 24px 20px;
+      border-radius: 18px;
+      border: 1px solid #2d3139;
+      max-width: 440px;
+      margin: 0 auto;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    }
+    h1 {
+      margin: 0 0 4px 0;
+      font-size: 1.6rem;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+    }
+    .sub {
+      color: #8b949e;
+      font-size: 0.85rem;
+      margin-bottom: 22px;
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 18px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      color: #c9d1d9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      background: #0f1117;
+      color: #8b949e;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      background: #0f1117;
+      color: #ffffff;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    input[type="text"]:focus {
+      border-color: #2563eb;
+    }
+    .checkbox-group {
+      display: flex;
+      gap: 12px;
+      background: #0f1117;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #30363d;
+    }
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+      font-size: 0.9rem;
+      color: #f0f2f5;
+      text-transform: none;
+      letter-spacing: normal;
+      cursor: pointer;
+    }
+    .checkbox-group input[type="checkbox"] {
+      accent-color: #2563eb;
+      width: 18px;
+      height: 18px;
+    }
+    button {
+      width: 100%;
+      margin-top: 26px;
+      padding: 15px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    button:active {
+      background: #1d4ed8;
+    }
+    button:disabled {
+      background: #262c36;
+      color: #5b6574;
+      cursor: not-allowed;
+    }
+    #status {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: #8b949e;
+      line-height: 1.4;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Formattr</h1>
+  <div class="sub">Batch-konvertering og nedskalering</div>
+
+  <label>1. Velg bildefil</label>
+  <input type="file" id="imageInput" accept="image/*">
+
+  <label>2. Formater</label>
+  <div class="checkbox-group">
+    <label><input type="checkbox" value="image/jpeg" class="fmt" checked> JPG</label>
+    <label><input type="checkbox" value="image/png" class="fmt"> PNG</label>
+    <label><input type="checkbox" value="image/webp" class="fmt" checked> WebP</label>
+  </div>
+
+  <label>3. Piksler (bredder, kommaseparert)</label>
+  <input type="text" id="widthsInput" value="1920, 1080, 800" placeholder="f.eks. 1920, 1080, 600">
+
+  <button id="convertBtn" disabled>Konverter & Last ned</button>
+
+  <div id="status"></div>
+</div>
+
+<script>
+  const imageInput = document.getElementById('imageInput');
+  const convertBtn = document.getElementById('convertBtn');
+  const widthsInput = document.getElementById('widthsInput');
+  const statusDiv = document.getElementById('status');
+
+  let currentImage = null;
+  let originalFileName = 'bilde';
+
+  imageInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        currentImage = img;
+        convertBtn.disabled = false;
+        statusDiv.innerHTML = `Valgt bilde: ${img.naturalWidth} &times; ${img.naturalHeight} px`;
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  convertBtn.addEventListener('click', async () => {
+    const selectedFormats = Array.from(document.querySelectorAll('.fmt:checked')).map(cb => cb.value);
+    const targetWidths = widthsInput.value.split(',')
+      .map(w => parseInt(w.trim(), 10))
+      .filter(w => !isNaN(w) && w > 0);
+
+    if (selectedFormats.length === 0 || targetWidths.length === 0) {
+      alert('Velg minst ett format og én gyldig bredde.');
+      return;
+    }
+
+    convertBtn.disabled = true;
+    statusDiv.innerHTML = 'Behandler bilder...';
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const aspect = currentImage.naturalHeight / currentImage.naturalWidth;
+
+    let processedCount = 0;
+
+    for (const width of targetWidths) {
+      // Skalerer kun ned hvis originalen er større, ellers beholdes maks bredde
+      const targetW = Math.min(width, currentImage.naturalWidth);
+      const targetH = Math.round(targetW * aspect);
+
+      canvas.width = targetW;
+      canvas.height = targetH;
+      ctx.clearRect(0, 0, targetW, targetH);
+      ctx.drawImage(currentImage, 0, 0, targetW, targetH);
+
+      for (const format of selectedFormats) {
+        const ext = format.split('/')[1] === 'jpeg' ? 'jpg' : format.split('/')[1];
+        const dataUrl = canvas.toDataURL(format, 0.9);
+
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = `${originalFileName}_${targetW}px.${ext}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        processedCount++;
+        await new Promise(r => setTimeout(r, 200));
+      }
+    }
+
+    statusDiv.innerHTML = `Ferdig! Lastet ned ${processedCount} fil(er).`;
+    convertBtn.disabled = false;
+  });
+</script>
+
+</body>
+</html>
