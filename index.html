@@ -158,7 +158,7 @@
   <div class="section-title">3. Bredder (px, kommaseparert)</div>
   <input type="text" id="widthsInput" value="1920, 1080, 800" placeholder="f.eks. 1920, 1080">
 
-  <!-- Filnavn rett over eksempelvisningen -->
+  <!-- Filnavn -->
   <div class="section-title">4. Filnavn</div>
   <label for="fileNameInput">Ønsket navn (uten størrelse og format):</label>
   <input type="text" id="fileNameInput" placeholder="bilde">
@@ -341,10 +341,12 @@
 
   updatePreview();
 
-  // Registrering av Service Worker for PWA-installasjon
+  // Registrering av Service Worker for PWA på Android
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(err => console.error(err));
+      navigator.serviceWorker.register('./sw.js', { scope: './' })
+        .then(reg => console.log('SW registrert:', reg))
+        .catch(err => console.error('SW feil:', err));
     });
   }
 </script>
